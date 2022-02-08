@@ -77,7 +77,9 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 							return nil
 						}
 					}
-					fmt.Printf("KEEP   : %s/%s %s\n", path, string(de.Name()), genre)
+					if *D == true {
+						fmt.Printf("KEEP   : %s/%s %s\n", path, string(de.Name()), genre)
+					}
 				}
 			}
 			return nil
