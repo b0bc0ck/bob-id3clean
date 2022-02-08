@@ -15,8 +15,8 @@ import (
 )
 
 var P = flag.String("P", "/home/ftpd/glftpd/site/mp3/1969-01-01", "Full scan path")
-var c = flag.Bool("c", false, "Cleanup (delete folders)")
-var d = flag.Bool("d", false, "Debug mode")
+var C = flag.Bool("C", false, "Cleanup (delete folders)")
+var D = flag.Bool("D", false, "Debug mode")
 
 type Config struct {
 	Clean   []string
@@ -33,6 +33,7 @@ func genre(file string) string {
 }
 
 func traverse(path string, cleangenres []string, keepdirs []string) {
+	var rmdirs []string
 	err := godirwalk.Walk(path, &godirwalk.Options{
 		Unsorted: true,
 		Callback: func(osPathname string, de *godirwalk.Dirent) error {
@@ -41,7 +42,9 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 				for _, d := range keepdirs {
 					match, _ := regexp.MatchString(d, string(de.Name()))
 					if match == true {
-						fmt.Printf("%s/%s KEEPDIR\n", path, string(de.Name()))
+						if *D == true {
+							fmt.Printf("KEEPDIR: %s/%s\n", path, string(de.Name()))
+						}
 						return nil
 					}
 				}
@@ -61,9 +64,20 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 					genre := genre(files[0])
 					for _, g := range cleangenres {
 						if g == genre {
-							fmt.Printf("%s/%s %s\n", path, string(de.Name()), genre)
+							if *D == true {
+								fmt.Printf("DELETE : %s/%s %s\n", path, string(de.Name()), genre)
+								if *C == true {
+									rmdir := path + "/" + string(de.Name())
+									rmdirs = append(rmdirs, rmdir)
+									//_ = os.RemoveAll(rmdir)
+									return nil
+								}
+								return nil
+							}
+							return nil
 						}
 					}
+					fmt.Printf("KEEP   : %s/%s %s\n", path, string(de.Name()), genre)
 				}
 			}
 			return nil
@@ -72,6 +86,17 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// do the actual deletion of the files
+	for _, rmdir := range rmdirs {
+		if *C == true {
+			fmt.Printf("rm -rf %s\n", rmdir)
+			err = os.RemoveAll(rmdir)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+
 }
 
 func main() {
