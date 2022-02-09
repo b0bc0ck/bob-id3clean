@@ -434,7 +434,7 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 					match, _ := regexp.MatchString(strings.ToLower(d), strings.ToLower(string(de.Name())))
 					if match == true {
 						if *D == true {
-							fmt.Printf("KEEPDIR: %s/%s\n", path, string(de.Name()))
+							fmt.Printf("KEEPDIR : %s/%s\n", path, string(de.Name()))
 						}
 						return nil
 					}
@@ -466,20 +466,15 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 					for _, g := range cleangenres {
 						if strings.ToLower(g) == strings.ToLower(genre) {
 							if *D == true {
-								fmt.Printf("DELETE : %s/%s %s\n", path, string(de.Name()), genre)
-								if *C == true {
-									rmdir := path + "/" + string(de.Name())
-									rmdirs = append(rmdirs, rmdir)
-									//_ = os.RemoveAll(rmdir)
-									return nil
-								}
-								return nil
+								fmt.Printf("DELETE  : %s/%s %s\n", path, string(de.Name()), genre)
 							}
+							rmdir := path + "/" + string(de.Name())
+							rmdirs = append(rmdirs, rmdir)
 							return nil
 						}
 					}
 					if *D == true {
-						fmt.Printf("KEEP   : %s/%s %s\n", path, string(de.Name()), genre)
+						fmt.Printf("KEEP    : %s/%s %s\n", path, string(de.Name()), genre)
 					}
 				}
 			}
@@ -490,9 +485,8 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 		log.Fatal(err)
 	}
 	// do the actual deletion of the files
-	for _, rmdir := range rmdirs {
-		if *C == true {
-			fmt.Printf("rm -rf %s\n", rmdir)
+	if *C == true {
+		for _, rmdir := range rmdirs {
 			err = os.RemoveAll(rmdir)
 			if err != nil {
 				log.Fatal(err)
