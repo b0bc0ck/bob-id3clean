@@ -25,10 +25,7 @@ type Config struct {
 }
 
 func genre(file string) string {
-	tag, err := id3v2.Open(file, id3v2.Options{Parse: true})
-	if err != nil {
-		log.Fatal("Error while opening mp3 file: ", err)
-	}
+	tag, _ := id3v2.Open(file, id3v2.Options{Parse: true})
 	defer tag.Close()
 	return tag.Genre()
 }
