@@ -104,7 +104,13 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 
 func main() {
 	flag.Parse()
-	filename, _ := filepath.Abs("./bob-id3clean.yaml")
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fmt.Println(exPath)
+	filename, _ := filepath.Abs(exPath + "/bob-id3clean.yaml")
 	yamlFile, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
