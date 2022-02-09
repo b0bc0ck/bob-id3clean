@@ -431,7 +431,7 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 			if de.IsDir() {
 				// check if we match any of our keep directories
 				for _, d := range keepdirs {
-					match, _ := regexp.MatchString(d, string(de.Name()))
+					match, _ := regexp.MatchString(strings.ToLower(d), strings.ToLower(string(de.Name())))
 					if match == true {
 						if *D == true {
 							fmt.Printf("KEEPDIR: %s/%s\n", path, string(de.Name()))
