@@ -109,7 +109,6 @@ func main() {
 		panic(err)
 	}
 	exPath := filepath.Dir(ex)
-	fmt.Println(exPath)
 	filename, _ := filepath.Abs(exPath + "/bob-id3clean.yaml")
 	yamlFile, err := ioutil.ReadFile(filename)
 	if err != nil {
