@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 
 	"github.com/bogem/id3v2/v2"
 	"github.com/karrick/godirwalk"
@@ -63,7 +64,7 @@ func traverse(path string, cleangenres []string, keepdirs []string) {
 				if len(files) > 0 {
 					genre := genre(files[0])
 					for _, g := range cleangenres {
-						if g == genre {
+						if strings.ToLower(g) == strings.ToLower(genre) {
 							if *D == true {
 								fmt.Printf("DELETE : %s/%s %s\n", path, string(de.Name()), genre)
 								if *C == true {
